@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(flutter analyze:*)",
+      "Bash(find '/Users/cruzlara5/ProjetTut_Martinez_Rosenkranz_Terrier-main 2/Projets/prototype8/melanoma_detector_ptl/build/app/outputs/mapping/release/' -name *.txt)",
+      "Bash(xargs ls:*)",
+      "Bash(find '/Users/cruzlara5/ProjetTut_Martinez_Rosenkranz_Terrier-main 2/Projets/prototype8/melanoma_detector_ptl' -path */pytorch_lite/android* -name *.gradle*)"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+# Uncomment this line to define a global platform for your project
+platform :ios, '14.0'
+install! 'cocoapods', warn_for_unused_master_specs_repo: false
+
+# CocoaPods analytics sends network stats synchronously affecting flutter build latency.
+ENV['COCOAPODS_DISABLE_STATS'] = 'true'
+
+project 'Runner', {
+  'Debug' => :debug,
+  'Profile' => :release,
+  'Release' => :release,
+}
+
+def flutter_root
+  generated_xcode_build_settings_path = File.expand_path(File.join('..', 'Flutter', 'Generated.xcconfig'), __FILE__)
+  unless File.exist?(generated_xcode_build_settings_path)
+    raise "#{generated_xcode_build_settings_path} must exist. If you're running pod install manually, make sure flutter pub get is executed first"
+  end
+
+  File.foreach(generated_xcode_build_settings_path) do |line|
+    matches = line.match(/FLUTTER_ROOT\=(.*)/)
+    return matches[1].strip if matches
+  end
+  raise "FLUTTER_ROOT not found in #{generated_xcode_build_settings_path}. Try deleting Generated.xcconfig, then run flutter pub get"
+end
+
+require File.expand_path(File.join('packages', 'flutter_tools', 'bin', 'podhelper'), flutter_root)
+
+flutter_ios_podfile_setup
+
+target 'Runner' do
+  use_frameworks! :linkage => :static
+
+  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  target 'RunnerTests' do
+    inherit! :search_paths
+  end
+end
+
+post_install do |installer|
+  # ── Patch LibTorch-Lite-Nightly: wrap std::is_arithmetic specialization
+  # with a version guard — forbidden by libc++ >= 19 (Xcode 26).
+  Dir.glob("#{installer.sandbox.root}/**/c10/util/strong_type.h").each do |path|
+    content = File.read(path)
+    next if content.include?('PATCHED_FOR_LIBCPP19')
+    old_block = <<~'CPP'
+      template <typename T, typename Tag, typename ... M>
+      struct is_arithmetic<::strong::type<T, Tag, M...>>
+        : is_base_of<::strong::arithmetic::modifier<::strong::type<T, Tag, M...>>,
+                     ::strong::type<T, Tag, M...>>
+      {
+      };
+    CPP
+    new_block = <<~'CPP'
+      // PATCHED_FOR_LIBCPP19: is_arithmetic specialization forbidden by libc++ >= 19 (Xcode 26)
+      #if !defined(_LIBCPP_VERSION) || _LIBCPP_VERSION < 190000
+      template <typename T, typename Tag, typename ... M>
+      struct is_arithmetic<::strong::type<T, Tag, M...>>
+        : is_base_of<::strong::arithmetic::modifier<::strong::type<T, Tag, M...>>,
+                     ::strong::type<T, Tag, M...>>
+      {
+      };
+      #endif
+    CPP
+    patched = content.sub(old_block.chomp, new_block.chomp)
+    File.write(path, patched) if patched != content
+  end
+
+  installer.pods_project.targets.each do |target|
+    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = 'arm64'
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '14.0'
+      config.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'c++17'
+      config.build_settings['CLANG_CXX_LIBRARY'] = 'libc++'
+    end
+  end
+end

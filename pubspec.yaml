@@ -1,0 +1,59 @@
+name: melanoma_detector_unified
+description: "DermAI Unified — Analyse Dermatologique Complète (Local + Facial)"
+publish_to: 'none'
+version: 1.0.0
+
+environment:
+  sdk: ^3.7.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0
+  http_parser: ^4.1.0
+  image: ^4.1.0
+  image_picker: ^1.1.2
+  permission_handler: ^11.3.0
+  shared_preferences: ^2.3.2
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  shimmer: ^3.0.0
+  pdf: ^3.11.1
+  path_provider: ^2.1.0
+  intl: ^0.19.0
+  share_plus: ^9.0.0
+  google_mlkit_face_detection: ^0.11.0
+  flutter_animate: ^4.3.0
+  google_fonts: ^6.1.0
+  flutter_dotenv: ^5.1.0
+  image_cropper: ^11.0.0
+  pytorch_lite:
+    path: ./packages/pytorch_lite
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/app_icon.png"
+  adaptive_icon_background: "#F0F4F5"
+  adaptive_icon_foreground: "assets/icon/app_icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    # - assets/models/ # Commented out to avoid including all files
+    - assets/models/melanoma_mobilenet_v3.ptl
+    - assets/models/melanoma_mobile_v2.ptl
+    - assets/models/melanoma_mobile.ptl
+    - assets/models/melanoma_mobile_quantized.ptl
+    - assets/models/segmentation.ptl
+    - assets/models/labels.txt
+    - assets/models/yolo11n_lesion.ptl
+    - assets/models/labels_yolo.txt
+    - .env

@@ -1,0 +1,43 @@
+group 'com.zezo357.pytorch_lite'
+version '1.0'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.3.0'
+    }
+}
+
+rootProject.allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    namespace 'com.zezo357.pytorch_lite'
+    compileSdkVersion 31
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    defaultConfig {
+        minSdkVersion 21
+    }
+}
+dependencies{
+    implementation 'org.pytorch:pytorch_android_lite:2.1.0'
+    implementation 'org.pytorch:pytorch_android_torchvision_lite:2.1.0'
+    implementation 'com.facebook.soloader:nativeloader:0.8.0'
+
+
+}
