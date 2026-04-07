@@ -468,6 +468,7 @@ Tous droits réservés. L'utilisation, la modification et la distribution sont s
 | **Développement & Architecture** | Martinez, Rosenkranz, Terrier |
 | **Projet Tuteuré** | IUT Informatique — 3ème année, Semestre 1 |
 | **Auteur** | Oscar Martínez Villoria |
+| **Encadrant** | Samuel Cruz-Lara |
 
 ---
 
