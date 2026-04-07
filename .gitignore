@@ -52,3 +52,9 @@ ios/Pods/
 
 # Local documentation (not for GitHub)
 DOCUMENTACION_CODIGO_DART.md
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# Gradle file hashes (generated)
+**/.gradle/
